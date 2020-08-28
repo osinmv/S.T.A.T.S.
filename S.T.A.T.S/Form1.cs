@@ -29,6 +29,8 @@ namespace S.T.A.T.S
         int cycle;
         double total;
         int over;
+        string log_holder;
+        int log_length;
         public Form1()
         {
             InitializeComponent();
@@ -43,7 +45,8 @@ namespace S.T.A.T.S
             z = 0;
             total = 0.0;
             over = 0;
-
+            log_length = 0;
+            log_holder = "";
         }
         public void clear_chart()
         {
@@ -52,7 +55,7 @@ namespace S.T.A.T.S
             {
                 Name = "Speed",
                 Color = System.Drawing.Color.Purple,
-                BorderWidth = 5,
+                BorderWidth = 4,
                 IsVisibleInLegend = true,
                 IsXValueIndexed = true,
                 ChartType = SeriesChartType.FastLine
@@ -78,11 +81,20 @@ namespace S.T.A.T.S
                 z = m.ReadFloat("base+10BE9C");
                 pos = m.ReadString("xrCore.dll+000BF368,4,0,40,8,10,48,4");
                 cycle++;
+                if (prev_x != 0.0 && prev_y != 0.0 && prev_z != 0.0 && x == 0.0 && y == 0.0 && z == 0.0)
+                {
+                    log_holder += "av. speed:" + speed.ToString() + " location:" + pos + "\n";
+                    log_length++;
+                    if (log_length > 100)
+                    {
+                        eventLog1.WriteEntry(log_holder);
+                        log_length = 0;
+                    }
+                }
+
             }
             Thread.Sleep(1000);
             backgroundWorker1.ReportProgress(1);
-
-
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -91,12 +103,16 @@ namespace S.T.A.T.S
             {
                 label1.Text = "Connected";
                 speed = Math.Sqrt(Math.Pow(prev_x - x, 2) + Math.Pow(prev_y - y, 2) + Math.Pow(prev_z - z, 2));
-                label3.Text = "x = " + x.ToString() + " y = " + y.ToString() + " z = " + z.ToString() + "place " + pos + " speed " + Math.Round(speed, 2).ToString();
-                if (x == 0 && y == 0 && z == 0)
+                label3.Text = "x = " + x.ToString() + " y = " + y.ToString() + " z = " + z.ToString() + " place " + pos + " speed " + Math.Round(speed, 2).ToString();
+                if (prev_x == 0.0 && prev_y == 0.0 && prev_z == 0.0 && x != 0.0 && y != 0.0 && z != 0.0)
                 {
                     clear_chart();
+                    cycle = 1;
+                    total = 0;
+                    over = 0;
+
                 }
-                if (speed < 50.0)
+                if (speed > 0.0 && speed < 50.0)
                 {
                     series1.Points.AddXY(cycle, speed);
                     total += speed;
@@ -141,6 +157,16 @@ namespace S.T.A.T.S
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void fileSystemWatcher1_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+
+        }
+
+        private void eventLog1_EntryWritten(object sender, System.Diagnostics.EntryWrittenEventArgs e)
+        {
+
         }
 
         private void label4_MouseUp(object sender, MouseEventArgs e)
