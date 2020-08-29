@@ -64,6 +64,8 @@ namespace S.T.A.T.S
             };
             chart1.Series.Add(series1);
         }
+        private string compute_hash_folder(string path, string file_ending, bool recursively)
+                    {
         private void label2_Click(object sender, EventArgs e)
         {
 
