@@ -10,6 +10,9 @@ using System.Threading;
 using System.Windows.Forms;
 using Memory;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Security.Cryptography;
+using System.Diagnostics;
+using System.IO;
 
 namespace S.T.A.T.S
 {
@@ -31,7 +34,10 @@ namespace S.T.A.T.S
         int over;
         string log_holder;
         int log_length;
+        SHA256 crypt;
         DateTime time;
+        bool hashed;
+        string game_directory;
         public Form1()
         {
             InitializeComponent();
@@ -49,6 +55,9 @@ namespace S.T.A.T.S
             log_length = 0;
             log_holder = "";
             time = new DateTime();
+            crypt = SHA256.Create();
+            hashed = false;
+            game_directory = "";
         }
         public void clear_chart()
         {
@@ -65,7 +74,34 @@ namespace S.T.A.T.S
             chart1.Series.Add(series1);
         }
         private string compute_hash_folder(string path, string file_ending, bool recursively)
+        {
+
+            // Recursively go through all directories and take hash of files that have a specific file type
+            DirectoryInfo target = new DirectoryInfo(path);
+            if (!target.Exists)
+            {
+                return "";
+            }
+            else
+            {
+                string logs = "";
+                if (recursively)
+                {
+                    DirectoryInfo[] dirs = target.GetDirectories();
+                    for (int i = 0; i < dirs.Length; i++)
                     {
+                        logs += compute_hash_folder(dirs[i].FullName, file_ending, true);
+                    }
+                }
+                FileInfo[] files = target.GetFiles("*." + file_ending);
+                for (int i = 0; i < files.Length; i++)
+                {
+                    logs += crypt.ComputeHash(File.Open(files[i].FullName, FileMode.Open)).ToString();
+                }
+                return logs;
+
+            }
+        }
         private void label2_Click(object sender, EventArgs e)
         {
 
@@ -77,6 +113,18 @@ namespace S.T.A.T.S
             ProcOpen = m.OpenProcess("XR_3DA");
             if (ProcOpen)
             {
+                if (!hashed)
+                {
+                    hashed = true;
+                    Process game = Process.GetProcessById(m.GetProcIdFromName("XR_3DA"));
+                    game_directory = game.MainModule.FileName;
+                    game.Dispose();
+                    game_directory = game_directory.Replace("/bin/XR_3DA.exe", "");
+                    log_holder += compute_hash_folder(game_directory + "/gamedata/scripts", "script", true);
+                    log_holder += compute_hash_folder(game_directory + "/gamedata/configs", "ltx", true);
+                    log_holder += compute_hash_folder(game_directory, ".db", false);
+                    // TODO: add code for filesystem watcher 
+                }
                 prev_x = x;
                 prev_y = y;
                 prev_z = z;
@@ -87,7 +135,7 @@ namespace S.T.A.T.S
                 cycle++;
                 if (prev_x != 0.0 && prev_y != 0.0 && prev_z != 0.0 && x == 0.0 && y == 0.0 && z == 0.0)
                 {
-                    log_holder +=time.Hour.ToString()+","+time.Minute.ToString()+","+time.Second.ToString()+"," + speed.ToString() + "," + pos + "\n";
+                    log_holder += time.Hour.ToString() + "," + time.Minute.ToString() + "," + time.Second.ToString() + "," + speed.ToString() + "," + pos + "\n";
                     log_length++;
                     if (log_length > 100)
                     {
@@ -160,6 +208,12 @@ namespace S.T.A.T.S
         }
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if (log_holder.Length > 0)
+            {
+
+
+                eventLog1.WriteEntry(log_holder);
+            }
             this.Close();
         }
 
