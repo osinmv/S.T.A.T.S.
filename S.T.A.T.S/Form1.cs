@@ -35,7 +35,6 @@ namespace S.T.A.T.S
         string log_holder;
         int log_length;
         SHA1 crypt;
-        DateTime time;
         bool hashed;
         string game_directory;
         public Form1()
@@ -54,7 +53,6 @@ namespace S.T.A.T.S
             over = 0;
             log_length = 0;
             log_holder = "";
-            time = new DateTime();
             crypt = SHA1.Create();
             hashed = false;
             game_directory = "";
@@ -80,7 +78,7 @@ namespace S.T.A.T.S
             {
                 sb.Append(array[i].ToString("x2"));
             }
-            return sb.ToString();
+            return sb.ToString()+"\n";
         }
         private string compute_hash_folder(string path, string file_ending, bool recursively)
         {
@@ -144,7 +142,7 @@ namespace S.T.A.T.S
                 cycle++;
                 if (prev_x != 0.0 && prev_y != 0.0 && prev_z != 0.0 && x == 0.0 && y == 0.0 && z == 0.0)
                 {
-                    log_holder += time.Hour.ToString() + "," + time.Minute.ToString() + "," + time.Second.ToString() + "," + speed.ToString() + "," + pos + "\n";
+                    log_holder += DateTime.Now.Hour + "," + DateTime.Now.Minute + "," + DateTime.Now.Second + "," + speed.ToString() + "," + pos + "\n";
                     log_length++;
                     if (log_length > 100)
                     {
