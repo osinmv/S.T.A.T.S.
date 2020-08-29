@@ -31,6 +31,7 @@ namespace S.T.A.T.S
         int over;
         string log_holder;
         int log_length;
+        DateTime time;
         public Form1()
         {
             InitializeComponent();
@@ -47,6 +48,7 @@ namespace S.T.A.T.S
             over = 0;
             log_length = 0;
             log_holder = "";
+            time = new DateTime();
         }
         public void clear_chart()
         {
@@ -83,7 +85,7 @@ namespace S.T.A.T.S
                 cycle++;
                 if (prev_x != 0.0 && prev_y != 0.0 && prev_z != 0.0 && x == 0.0 && y == 0.0 && z == 0.0)
                 {
-                    log_holder += "av. speed:" + speed.ToString() + " location:" + pos + "\n";
+                    log_holder +=time.Hour.ToString()+","+time.Minute.ToString()+","+time.Second.ToString()+"," + speed.ToString() + "," + pos + "\n";
                     log_length++;
                     if (log_length > 100)
                     {
