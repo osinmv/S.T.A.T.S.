@@ -105,7 +105,7 @@ namespace S.T.A.T.S
                 FileInfo[] files = target.GetFiles(file_ending);
                 for (int i = 0; i < files.Length; i++)
                 {
-                    logs += crypt.ComputeHash(File.Open(files[i].FullName,FileMode.Open,FileAccess.Read,FileShare.ReadWrite)).ToString();
+                    logs += byte_to_string(crypt.ComputeHash(File.Open(files[i].FullName,FileMode.Open,FileAccess.Read,FileShare.ReadWrite)));
                 }
                 return logs;
 
