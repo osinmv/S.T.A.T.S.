@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -43,19 +44,20 @@
             this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.label5 = new System.Windows.Forms.Label();
+            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
+            this.eventLog1 = new System.Diagnostics.EventLog();
+            this.label6 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
+            resources.ApplyResources(this.label2, "label2");
             this.label2.ForeColor = System.Drawing.Color.SeaShell;
-            this.label2.Location = new System.Drawing.Point(25, 84);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Подключение";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // backgroundWorker1
@@ -67,33 +69,22 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
+            resources.ApplyResources(this.label1, "label1");
             this.label1.ForeColor = System.Drawing.Color.SeaShell;
-            this.label1.Location = new System.Drawing.Point(108, 84);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 13);
-            this.label1.TabIndex = 2;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
+            resources.ApplyResources(this.label3, "label3");
             this.label3.ForeColor = System.Drawing.Color.SeaShell;
-            this.label3.Location = new System.Drawing.Point(26, 101);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(0, 13);
-            this.label3.TabIndex = 3;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
+            resources.ApplyResources(this.label4, "label4");
             this.label4.ContextMenuStrip = this.contextMenuStrip1;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.SeaShell;
-            this.label4.Location = new System.Drawing.Point(23, 27);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(272, 25);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "S.T.A.L.K.E.R S.T.A.T.S ";
             this.label4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label4_MouseDown);
             this.label4.MouseMove += new System.Windows.Forms.MouseEventHandler(this.label4_MouseMove);
             this.label4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.label4_MouseUp);
@@ -105,27 +96,24 @@
             this.condensedViewToolStripMenuItem,
             this.exitToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(132, 70);
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.exitToolStripMenuItem.Text = "Full View";
+            resources.ApplyResources(this.exitToolStripMenuItem, "exitToolStripMenuItem");
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.fullToolStripMenuItem_Click);
             // 
             // condensedViewToolStripMenuItem
             // 
             this.condensedViewToolStripMenuItem.Name = "condensedViewToolStripMenuItem";
-            this.condensedViewToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
-            this.condensedViewToolStripMenuItem.Text = "Small View";
+            resources.ApplyResources(this.condensedViewToolStripMenuItem, "condensedViewToolStripMenuItem");
             this.condensedViewToolStripMenuItem.Click += new System.EventHandler(this.smallViewToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem1
             // 
             this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
-            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(131, 22);
-            this.exitToolStripMenuItem1.Text = "Exit";
+            resources.ApplyResources(this.exitToolStripMenuItem1, "exitToolStripMenuItem1");
             this.exitToolStripMenuItem1.Click += new System.EventHandler(this.exitToolStripMenuItem1_Click);
             // 
             // chart1
@@ -141,7 +129,7 @@
             legend1.IsTextAutoFit = false;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(12, 146);
+            resources.ApplyResources(this.chart1, "chart1");
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Color = System.Drawing.Color.SlateBlue;
@@ -149,44 +137,56 @@
             series1.MarkerSize = 10;
             series1.Name = "Speed";
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(299, 202);
-            this.chart1.TabIndex = 5;
-            this.chart1.Text = " ";
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
+            resources.ApplyResources(this.label5, "label5");
             this.label5.ForeColor = System.Drawing.Color.SeaShell;
-            this.label5.Location = new System.Drawing.Point(220, 190);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(54, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Av Speed";
+            // 
+            // fileSystemWatcher1
+            // 
+            this.fileSystemWatcher1.EnableRaisingEvents = true;
+            this.fileSystemWatcher1.SynchronizingObject = this;
+            this.fileSystemWatcher1.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
+            // 
+            // eventLog1
+            // 
+            this.eventLog1.Log = "Application";
+            this.eventLog1.Source = "STALKER STATS";
+            this.eventLog1.SynchronizingObject = this;
+            this.eventLog1.EntryWritten += new System.Diagnostics.EntryWrittenEventHandler(this.eventLog1_EntryWritten);
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label6.Name = "label6";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(323, 360);
             this.ControlBox = false;
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
-            this.MaximumSize = new System.Drawing.Size(339, 376);
-            this.MinimumSize = new System.Drawing.Size(339, 150);
             this.Name = "Form1";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -204,6 +204,9 @@
         private System.Windows.Forms.ToolStripMenuItem condensedViewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem1;
         private System.Windows.Forms.Label label5;
+        private System.Diagnostics.EventLog eventLog1;
+        public System.IO.FileSystemWatcher fileSystemWatcher1;
+        private System.Windows.Forms.Label label6;
     }
 }
 

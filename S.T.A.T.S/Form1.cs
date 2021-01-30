@@ -10,6 +10,9 @@ using System.Threading;
 using System.Windows.Forms;
 using Memory;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Security.Cryptography;
+using System.Diagnostics;
+using System.IO;
 
 namespace S.T.A.T.S
 {
@@ -29,6 +32,16 @@ namespace S.T.A.T.S
         int cycle;
         double total;
         int over;
+        string log_holder;
+        int log_length;
+        //MD5 crypt;
+        bool hashed;
+        string game_directory;
+        float walking;
+        float running;
+        float jumps;
+        float sprint;
+
         public Form1()
         {
             InitializeComponent();
@@ -43,7 +56,11 @@ namespace S.T.A.T.S
             z = 0;
             total = 0.0;
             over = 0;
-
+            log_length = 0;
+            log_holder = "";
+            //crypt = MD5.Create();
+            hashed = false;
+            game_directory = "";
         }
         public void clear_chart()
         {
@@ -52,13 +69,51 @@ namespace S.T.A.T.S
             {
                 Name = "Speed",
                 Color = System.Drawing.Color.Purple,
-                BorderWidth = 5,
+                BorderWidth = 4,
                 IsVisibleInLegend = true,
                 IsXValueIndexed = true,
                 ChartType = SeriesChartType.FastLine
             };
             chart1.Series.Add(series1);
         }
+        private string byte_to_string(Byte[] array)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < array.Length; i++)
+            {
+                sb.Append(array[i].ToString("x2"));
+            }
+            return sb.ToString()+"\n";
+        }
+        /*private string compute_hash_folder(string path, string file_ending, bool recursively)
+        {
+
+            // Recursively go through all directories and take hash of files that have a specific file type
+            DirectoryInfo target = new DirectoryInfo(path);
+            if (!target.Exists)
+            {
+                return "";
+            }
+            else
+            {
+                string logs = "";
+                if (recursively)
+                {
+                    DirectoryInfo[] dirs = target.GetDirectories();
+                    for (int i = 0; i < dirs.Length; i++)
+                    {
+                        logs += compute_hash_folder(dirs[i].FullName, file_ending, true);
+                    }
+                }
+                FileInfo[] files = target.GetFiles(file_ending);
+                for (int i = 0; i < files.Length; i++)
+                {
+                    logs += byte_to_string(crypt.ComputeHash(File.Open(files[i].FullName,FileMode.Open,FileAccess.Read,FileShare.ReadWrite)));
+                }
+                return logs;
+
+            }
+        }*/
         private void label2_Click(object sender, EventArgs e)
         {
 
@@ -70,6 +125,18 @@ namespace S.T.A.T.S
             ProcOpen = m.OpenProcess("XR_3DA");
             if (ProcOpen)
             {
+                /*if (!hashed)
+                {
+                    hashed = true;
+                    Process game = Process.GetProcessById(m.GetProcIdFromName("XR_3DA"));
+                    game_directory = game.MainModule.FileName;
+                    game.Dispose();
+                    game_directory = game_directory.Replace("\\bin\\XR_3DA.exe", "");
+                    log_holder += compute_hash_folder(game_directory + "/gamedata/scripts", "*.script", true);
+                    log_holder += compute_hash_folder(game_directory + "/gamedata/configs", "*.ltx", true);
+                    log_holder += compute_hash_folder(game_directory, "gamedata*", false);
+                    // TODO: add code for filesystem watcher 
+                }*/
                 prev_x = x;
                 prev_y = y;
                 prev_z = z;
@@ -77,12 +144,25 @@ namespace S.T.A.T.S
                 y = m.ReadFloat("base+10BE98");
                 z = m.ReadFloat("base+10BE9C");
                 pos = m.ReadString("xrCore.dll+000BF368,4,0,40,8,10,48,4");
+                jumps = m.ReadFloat("base+0010E58C,C,4C,84,624,5A4");
+                walking = m.ReadFloat("base+0010E58C,C,4C,84,624,5A0");
+                running = m.ReadFloat("base+0010E58C,C,4C,84,624,5A8");
+                sprint = m.ReadFloat("base+0010E58C,C,4C,84,624,5BC");
                 cycle++;
+                if (prev_x != 0.0 && prev_y != 0.0 && prev_z != 0.0 && x == 0.0 && y == 0.0 && z == 0.0)
+                {
+                    /*log_holder += DateTime.Now.Hour + "," + DateTime.Now.Minute + "," + DateTime.Now.Second + "," + speed.ToString() + "," + pos + "\n";
+                    log_length++;
+                    if (log_length > 100)
+                    {
+                        eventLog1.WriteEntry(log_holder);
+                        log_length = 0;
+                    }*/
+                }
+
             }
             Thread.Sleep(1000);
             backgroundWorker1.ReportProgress(1);
-
-
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -90,13 +170,18 @@ namespace S.T.A.T.S
             if (ProcOpen)
             {
                 label1.Text = "Connected";
-                speed = Math.Sqrt(Math.Pow(prev_x - x, 2) + Math.Pow(prev_y - y, 2) + Math.Pow(prev_z - z, 2));
-                label3.Text = "x = " + x.ToString() + " y = " + y.ToString() + " z = " + z.ToString() + "place " + pos + " speed " + Math.Round(speed, 2).ToString();
-                if (x == 0 && y == 0 && z == 0)
+                speed = Math.Sqrt(Math.Pow(prev_x - x, 2) + Math.Pow(prev_y - y, 2)+Math.Pow(prev_z-z,2));
+                label3.Text = "x = " + x.ToString() + " y = " + y.ToString() + " z = " + z.ToString() + " place " + pos + " speed " + Math.Round(speed, 2).ToString();
+                label6.Text ="jump:"+jumps.ToString()+" walking:"+walking.ToString()+" running:"+running.ToString()+" sprint:"+sprint.ToString();
+                if (prev_x == 0.0 && prev_y == 0.0 && prev_z == 0.0 && x != 0.0 && y != 0.0 && z != 0.0)
                 {
                     clear_chart();
+                    cycle = 1;
+                    total = 0;
+                    over = 0;
+
                 }
-                if (speed < 50.0)
+                if (speed > 0.0 && speed < 50.0)
                 {
                     series1.Points.AddXY(cycle, speed);
                     total += speed;
@@ -140,7 +225,29 @@ namespace S.T.A.T.S
         }
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            /*if (log_holder.Length > 0)
+            {
+
+
+                eventLog1.WriteEntry(log_holder);
+            }
+            */
             this.Close();
+        }
+
+        private void fileSystemWatcher1_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+
+        }
+
+        private void eventLog1_EntryWritten(object sender, System.Diagnostics.EntryWrittenEventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void label4_MouseUp(object sender, MouseEventArgs e)
