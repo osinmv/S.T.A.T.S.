@@ -34,9 +34,14 @@ namespace S.T.A.T.S
         int over;
         string log_holder;
         int log_length;
-        SHA1 crypt;
+        //MD5 crypt;
         bool hashed;
         string game_directory;
+        float walking;
+        float running;
+        float jumps;
+        float sprint;
+
         public Form1()
         {
             InitializeComponent();
@@ -53,7 +58,7 @@ namespace S.T.A.T.S
             over = 0;
             log_length = 0;
             log_holder = "";
-            crypt = SHA1.Create();
+            //crypt = MD5.Create();
             hashed = false;
             game_directory = "";
         }
@@ -80,7 +85,7 @@ namespace S.T.A.T.S
             }
             return sb.ToString()+"\n";
         }
-        private string compute_hash_folder(string path, string file_ending, bool recursively)
+        /*private string compute_hash_folder(string path, string file_ending, bool recursively)
         {
 
             // Recursively go through all directories and take hash of files that have a specific file type
@@ -108,7 +113,7 @@ namespace S.T.A.T.S
                 return logs;
 
             }
-        }
+        }*/
         private void label2_Click(object sender, EventArgs e)
         {
 
@@ -120,7 +125,7 @@ namespace S.T.A.T.S
             ProcOpen = m.OpenProcess("XR_3DA");
             if (ProcOpen)
             {
-                if (!hashed)
+                /*if (!hashed)
                 {
                     hashed = true;
                     Process game = Process.GetProcessById(m.GetProcIdFromName("XR_3DA"));
@@ -131,7 +136,7 @@ namespace S.T.A.T.S
                     log_holder += compute_hash_folder(game_directory + "/gamedata/configs", "*.ltx", true);
                     log_holder += compute_hash_folder(game_directory, "gamedata*", false);
                     // TODO: add code for filesystem watcher 
-                }
+                }*/
                 prev_x = x;
                 prev_y = y;
                 prev_z = z;
@@ -139,16 +144,20 @@ namespace S.T.A.T.S
                 y = m.ReadFloat("base+10BE98");
                 z = m.ReadFloat("base+10BE9C");
                 pos = m.ReadString("xrCore.dll+000BF368,4,0,40,8,10,48,4");
+                jumps = m.ReadFloat("base+0010E58C,C,4C,84,624,5A4");
+                walking = m.ReadFloat("base+0010E58C,C,4C,84,624,5A0");
+                running = m.ReadFloat("base+0010E58C,C,4C,84,624,5A8");
+                sprint = m.ReadFloat("base+0010E58C,C,4C,84,624,5BC");
                 cycle++;
                 if (prev_x != 0.0 && prev_y != 0.0 && prev_z != 0.0 && x == 0.0 && y == 0.0 && z == 0.0)
                 {
-                    log_holder += DateTime.Now.Hour + "," + DateTime.Now.Minute + "," + DateTime.Now.Second + "," + speed.ToString() + "," + pos + "\n";
+                    /*log_holder += DateTime.Now.Hour + "," + DateTime.Now.Minute + "," + DateTime.Now.Second + "," + speed.ToString() + "," + pos + "\n";
                     log_length++;
                     if (log_length > 100)
                     {
                         eventLog1.WriteEntry(log_holder);
                         log_length = 0;
-                    }
+                    }*/
                 }
 
             }
@@ -161,8 +170,9 @@ namespace S.T.A.T.S
             if (ProcOpen)
             {
                 label1.Text = "Connected";
-                speed = Math.Sqrt(Math.Pow(prev_x - x, 2) + Math.Pow(prev_y - y, 2) + Math.Pow(prev_z - z, 2));
+                speed = Math.Sqrt(Math.Pow(prev_x - x, 2) + Math.Pow(prev_y - y, 2)+Math.Pow(prev_z-z,2));
                 label3.Text = "x = " + x.ToString() + " y = " + y.ToString() + " z = " + z.ToString() + " place " + pos + " speed " + Math.Round(speed, 2).ToString();
+                label6.Text ="jump:"+jumps.ToString()+" walking:"+walking.ToString()+" running:"+running.ToString()+" sprint:"+sprint.ToString();
                 if (prev_x == 0.0 && prev_y == 0.0 && prev_z == 0.0 && x != 0.0 && y != 0.0 && z != 0.0)
                 {
                     clear_chart();
@@ -215,12 +225,13 @@ namespace S.T.A.T.S
         }
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (log_holder.Length > 0)
+            /*if (log_holder.Length > 0)
             {
 
 
                 eventLog1.WriteEntry(log_holder);
             }
+            */
             this.Close();
         }
 
@@ -230,6 +241,11 @@ namespace S.T.A.T.S
         }
 
         private void eventLog1_EntryWritten(object sender, System.Diagnostics.EntryWrittenEventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }

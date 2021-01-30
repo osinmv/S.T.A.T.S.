@@ -46,6 +46,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             this.eventLog1 = new System.Diagnostics.EventLog();
+            this.label6 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
@@ -157,12 +158,20 @@
             this.eventLog1.SynchronizingObject = this;
             this.eventLog1.EntryWritten += new System.Diagnostics.EntryWrittenEventHandler(this.eventLog1_EntryWritten);
             // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label6.Name = "label6";
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ControlBox = false;
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.label4);
@@ -197,6 +206,7 @@
         private System.Windows.Forms.Label label5;
         private System.Diagnostics.EventLog eventLog1;
         public System.IO.FileSystemWatcher fileSystemWatcher1;
+        private System.Windows.Forms.Label label6;
     }
 }
 
